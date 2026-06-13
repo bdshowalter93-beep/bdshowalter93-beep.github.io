@@ -875,7 +875,7 @@
                 this.vy = gravityVector.y * 0.5 +
                         (Math.random() - 0.5) * drift;
                 this.friction = 0.92;
-                this.maxSpeed = 2.0 + Math.random() * 0.5;     
+                this.maxSpeed = 4.0 + Math.random() * 1;     
                 
                 // Rotational Physics + NEW Max Spin Safety Clamp
                 this.angle = Math.random() * Math.PI * 2;
@@ -913,7 +913,7 @@
             }
 
             update() {
-                const gravityStrength = 0.035;
+                const gravityStrength = 0.08;
 
                 this.vx += gravityVector.x * gravityStrength;
                 this.vy += gravityVector.y * gravityStrength;
@@ -929,26 +929,37 @@
                     this.vy = (this.vy / speed) * this.maxSpeed;
                 }
 
-                // TEXT COLLISION ENGINE
-                if (this.x > textBounds.left && this.x < textBounds.right &&
-                    this.y > textBounds.top && this.y < textBounds.bottom) {
-                    
-                    if (this.y - this.vy <= textBounds.top + 12) {
-                        this.y = textBounds.top - 3; 
-                        this.vy = -Math.abs(this.vy) * 4.5; 
-                        this.vx += this.x < (textBounds.left + textBounds.right) / 2 ? -8.0 : 8.0; 
-                        
-                        // Add tumbling energy on bounce
-                        this.spin += Math.random() * 0.08 - 0.04; 
-                    } else {
-                        if (this.x < (textBounds.left + textBounds.right) / 2) {
-                            this.x = textBounds.left - 12;
-                            this.vx = -Math.abs(this.vx) * 4.0;
-                        } else {
-                            this.x = textBounds.right + 12;
-                            this.vx = Math.abs(this.vx) * 4.0;
-                        }
-                    }
+                if (
+                    this.x > textBounds.left &&
+                    this.x < textBounds.right &&
+                    this.y > textBounds.top &&
+                    this.y < textBounds.bottom
+                ) {
+
+                    const centerX =
+                        (textBounds.left + textBounds.right) * 0.5;
+
+                    const centerY =
+                        (textBounds.top + textBounds.bottom) * 0.5;
+
+                    const dx = this.x - centerX;
+                    const dy = this.y - centerY;
+
+                    const dist = Math.hypot(dx, dy) || 1;
+
+                    const nx = dx / dist;
+                    const ny = dy / dist;
+
+                    // Strong side deflection
+                    this.vx += nx * 0.35;
+                    this.vy += ny * 0.35;
+
+                    // Preserve most velocity
+                    this.vx *= 0.98;
+                    this.vy *= 0.98;
+
+                    this.spin +=
+                        (Math.random() - 0.5) * 0.004;
                 }
 
                 // MOUSE FORCE ENGINE
@@ -991,6 +1002,13 @@
 
                 // Continuous 3D Flip Modulator
                 this.scaleY = Math.sin((this.y + this.flipOffset) * this.flipSpeed);
+
+                const targetAngle =
+                    Math.atan2(this.vy, this.vx) +
+                    Math.PI / 2;
+
+                this.angle +=
+                    (targetAngle - this.angle) * 0.02;
 
                 if (
                     this.y > canvasHeight + 100 ||
