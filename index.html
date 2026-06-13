@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bryce | VFX & 3D Artist Portfolio</title>
+    
+    <style>
+        /* ==========================================================================
+           1. CORE DESIGN & RESET
+           ========================================================================= */
+            /* Leaf Canvas Positioning */
+        #leaf-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1; /* Sits behind text (z-index 2) but in front of background */
+            pointer-events: none; /* Allows mouse interactions to pass through to buttons */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        :root {
+            --bg-dark: #0a0c0e;
+            --card-bg: #12161a;
+            --accent: #285928; 
+            --accent-glow: #3e823e;
+            --text-main: #ffffff;
+            --text-muted: #8e96a3;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
+
+        /* ==========================================================================
+           2. NAVIGATION
+           ========================================================================= */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 6%;
+            background-color: rgba(10, 12, 14, 0.85);
+            backdrop-filter: blur(12px);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .logo span { color: var(--accent-glow); }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-main);
+            text-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        /* ==========================================================================
+           3. HERO SPOTLIGHT
+           ========================================================================= */
+        .hero-section {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: url('Forest Spot Horizontal.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 0 20px;
+            position: relative;
+        }
+
+        .hero-content { z-index: 2; }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            line-height: 1.1;
+        }
+
+        .accent-text { color: #ffffff; }
+
+        .hero-content p {
+            font-size: 1.3rem;
+            color: var(--text-main);
+            margin-bottom: 40px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 40px;
+            background-color: var(--accent);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease, background-color 0.3s;
+        }
+
+        .btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 30px var(--accent-glow);
+            background-color: var(--accent-glow);
+        }
+
+        /* ==========================================================================
+           4. PORTFOLIO MASONRY GRID (PURE MEDIA WALL)
+           ========================================================================= */
+        .work-section {
+            padding: 100px 6%;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            text-align: center;
+            font-weight: 800;
+        }
+
+        .portfolio-grid {
+            column-count: 2;
+            column-gap: 30px;
+            width: 100%;
+        }
+
+        /* Span header across both layout columns smoothly */
+        .grid-divider {
+            column-span: all;
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin: 20px 0 40px 0;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-main);
+            text-transform: uppercase;
+        }
+
+        .project-card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
+            display: inline-block;
+            width: 100%;
+            margin-bottom: 30px;
+            break-inside: avoid;
+        }
+
+        .media-container {
+            position: relative;
+            width: 100%;
+            height: auto; 
+            background-color: #050608;
+            overflow: hidden;
+            display: block;
+        }
+
+        .media-container img, 
+        .media-container video {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(40, 89, 40, 0.3);
+            border-color: var(--accent-glow);
+        }
+
+        .project-card:hover .media-container img,
+        .project-card:hover .media-container video {
+            transform: scale(1.02);
+        }
+
+        @media (max-width: 900px) {
+            .portfolio-grid { column-count: 1; }
+        }
+
+        /* ==========================================================================
+           5. LIGHTBOX MODAL WITH FULL MEDIA TOGGLE
+           ========================================================================= */
+        .lightbox-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(5, 6, 8, 0.97);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            padding: 30px;
+        }
+
+        .lightbox-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-wrapper {
+            max-width: 95vw;
+            width: fit-content;
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.9);
+            border: 1px solid rgba(255,255,255,0.08);
+            transform: scale(0.92);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.15);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .lightbox-modal.active .modal-wrapper {
+            transform: scale(1);
+        }
+
+        .modal-display {
+            width: 100%;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .modal-display img,
+        .modal-display video {
+            display: none;
+            max-width: 85vw;
+            max-height: 65vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            outline: none;
+        }
+
+        .modal-details {
+            padding: 25px 30px;
+            background-color: var(--card-bg);
+            width: 100%;
+        }
+
+        .modal-details h3 {
+            font-size: 1.4rem;
+            margin-bottom: 4px;
+            font-weight: 700;
+        }
+
+        .modal-details p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.6);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.3s ease, background 0.3s, color 0.3s;
+            z-index: 2020;
+        }
+        
+        .close-btn:hover { transform: scale(1.1); color: var(--accent-glow); background: rgba(0,0,0,0.9); }
+
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 2rem;
+            cursor: pointer;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.3s ease, background 0.3s, color 0.3s, border-color 0.3s;
+            z-index: 2010;
+            user-select: none;
+        }
+
+        .nav-btn:hover {
+            background: rgba(0, 0, 0, 0.9);
+            color: var(--accent-glow);
+            border-color: var(--accent-glow);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .prev-btn { left: 40px; }
+        .next-btn { right: 40px; }
+
+        @media (max-width: 768px) {
+            .nav-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 1.3rem;
+            }
+            .prev-btn { left: 15px; }
+            .next-btn { right: 15px; }
+            .lightbox-modal { padding: 15px; }
+        }
+
+        /* ==========================================================================
+           6. CONTACT & FOOTER
+           ========================================================================= */
+        .contact-section {
+            padding: 120px 20px;
+            text-align: center;
+            background: linear-gradient(180deg, var(--bg-dark) 0%, #0d170d 100%);
+        }
+
+        .contact-section p {
+            color: var(--text-muted);
+            margin-bottom: 35px;
+            font-size: 1.1rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: #4a5161;
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(255,255,255,0.03);
+            background-color: #06080a;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.92); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop { animation: popIn 1.2s cubic-bezier(0.175, 0.885, 0.32, 1) forwards; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">BRYCE<span>.</span></div>
+        <ul class="nav-links">
+            <li><a href="#hero">Home</a></li>
+            <li><a href="#work">Portfolio</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <section id="hero" class="hero-section">
+        <div class="hero-content">
+            <h1 class="animate-pop">BRYCE <span class="accent-text">VFX</span></h1>
+            <p>3D Artist / FX Simulation Specialist</p>
+            <a href="#work" class="btn">Explore Creations</a>
+        </div>
+    </section>
+
+    <section id="work" class="work-section">
+        <h2 class="section-title">Selected Projects</h2>
+        <div class="portfolio-grid">
+            
+            <div class="grid-divider">Environment Stills & Design Renders</div>
+
+            <div class="project-card" data-type="image" data-src="Forest Spot.png" data-title="Forest Spot (Vertical)" data-desc="Personal project made for fun (2026)">
+                <div class="media-container">
+                    <img src="Forest Spot.png" alt="Volumetric Forest Setting Vertical">
+                </div>
+            </div>
+
+            <div class="project-card" data-type="image" data-src="Circuit Render.png" data-title="Circuit Render" data-desc="Visualization of my circuit iterations as part of a school satellite project (2026)">
+                <div class="media-container">
+                    <img src="Circuit Render.png" alt="3D Render of Electronic Circuit Boards">
+                </div>
+            </div>
+            
+            <div class="project-card" data-type="image" data-src="0042.png" data-title="Dream Sequence Clear" data-desc="Part of the Dream Sequence community render challenge hosted by Pwnisher (2026)">
+                <div class="media-container">
+                    <img src="0042.png" alt="Overhead Rally Car Render">
+                </div>
+            </div>
+
+            <div class="project-card" data-type="image" data-src="0082.png" data-title="Dream Sequence Test" data-desc="Test render for the Dream Sequence community render challenge hosted by Pwnisher (2026)">
+                <div class="media-container">
+                    <img src="0082.png" alt="Front Rally Car Render in Forest">
+                </div>
+            </div>
+
+            <div class="project-card" data-type="image" data-src="0115.png" data-title="Dream Sequence Rain" data-desc="Part of the Dream Sequence community render challenge hosted by Pwnisher (2026)">
+                <div class="media-container">
+                    <img src="0115.png" alt="Rally car in the rain">
+                </div>
+            </div>
+
+            <div class="project-card" data-type="image" data-src="Wrender.png" data-title="Background Fluid Concept" data-desc="Flip fluid simulation for my background (2025)">
+                <div class="media-container">
+                    <img src="Wrender.png" alt="Fluid Dynamics Splash">
+                </div>
+            </div>
+
+            <div class="project-card" data-type="image" data-src="Bmw.png" data-title="BMW Studio Model" data-desc="Test render of a 3d model I bought, (2022)">
+                <div class="media-container">
+                    <img src="Bmw.png" alt="BMW Cinematic Render">
+                </div>
+            </div>
+
+            <div class="project-card" data-type="image" data-src="KR Frame.png" data-title="Kinetic Rush Challenge Concept" data-desc="Part of the Kinetic Rush community render challenge hosted by Pwinisher (2024)">
+                <div class="media-container">
+                    <img src="KR Frame.png" alt="Compositing Scene">
+                </div>
+            </div>
+
+            <div class="project-card" data-type="image" data-src="Chess.png" data-title="Chess Background Render" data-desc="Personal project made for fun (2025)">
+                <div class="media-container">
+                    <img src="Chess.png" alt="Procedural Chess Pieces">
+                </div>
+            </div>
+
+            <div class="project-card" data-type="image" data-src="4k better fixed 2.png" data-title="Phil Statue Monolith" data-desc="Personal project, 3d printing (2024)">
+                <div class="media-container">
+                    <img src="4k better fixed 2.png" alt="Ancient Monolith Structure">
+                </div>
+            </div>
+
+            <div class="project-card" data-type="image" data-src="0062.png" data-title="Hayden's House ArchViz" data-desc="Arch Viz done for a friend for our portfolios (2025)">
+                <div class="media-container">
+                    <img src="0062.png" alt="Modern House Render">
+                </div>
+            </div>
+
+            <div class="project-card" data-type="image" data-src="Forest Spot Horizontal.png" data-title="Forest Spot (Horizontal)" data-desc="Personal project made for fun (2026)">
+                <div class="media-container">
+                    <img src="Forest Spot Horizontal.png" alt="Volumetric Forest Setting">
+                </div>
+            </div>
+
+            <div class="project-card" data-type="image" data-src="Rampage Rally.png" data-title="Rampage Rally Bike Shot" data-desc="Part of the Rampage Rally community challenge hosted by Pwinisher (2025)">
+                <div class="media-container">
+                    <img src="Rampage Rally.png" alt="Mountain Bike Motion Shot">
+                </div>
+            </div>
+
+            <div class="project-card" data-type="image" data-src="Planet.png" data-title="Sci-Fi Planet Asset" data-desc="Personal project for my background (2023)">
+                <div class="media-container">
+                    <img src="Planet.png" alt="Space Planet Render">
+                </div>
+            </div>
+
+
+            <div class="grid-divider">Animations, FX & Simulations</div>
+
+            <div class="project-card" data-type="video" data-src="0030-0150.mp4" data-title="Circuit Render Animation" data-desc="Visualization of my circuit as part of a school satellite project (2026)">
+                <div class="media-container">
+                    <video src="0030-0150.mp4" autoplay loop muted playsinline></video>
+                </div>
+            </div>
+
+            <div class="project-card" data-type="video" data-src="Dream Sequence Final V5.mp4" data-title="Dream Sequence" data-desc="Dream Sequence community render challenge hosted by Pwnisher (2026)">
+                <div class="media-container">
+                    <video src="Dream Sequence Final V5.mp4" autoplay loop muted playsinline></video>
+                </div>
+            </div>
+
+            <div class="project-card" data-type="video" data-src="0001-0600.mp4" data-title="Houdini Fluid Simulation" data-desc="Houdini fluid simulation when I had a license (2024)">
+                <div class="media-container">
+                    <video src="0001-0600.mp4" autoplay loop muted playsinline></video>
+                </div>
+            </div>
+
+            <div class="project-card" data-type="video" data-src="Endless Engines.mov" data-title="Endless Engines" data-desc="Endless Engines community render challenge hosted by Pwnisher (2023)">
+                <div class="media-container">
+                    <video src="Endless Engines.mov" autoplay loop muted playsinline></video>
+                </div>
+            </div>
+
+            <div class="project-card" data-type="video" data-src="Final Kinetic Rush.mp4" data-title="Kinetic Rush Final Render" data-desc="Kinetic Rush community render challenge hosted by Pwnisher (2024)">
+                <div class="media-container">
+                    <video src="Final Kinetic Rush.mp4" autoplay loop muted playsinline></video>
+                </div>
+            </div>
+
+            <div class="project-card" data-type="video" data-src="Ball Drop Sphere0001-0250.mp4" data-title="Ball Drop" data-desc="Rigid body simulation (2023)">
+                <div class="media-container">
+                    <video src="Ball Drop Sphere0001-0250.mp4" autoplay loop muted playsinline></video>
+                </div>
+            </div>
+
+            <div class="project-card" data-type="video" data-src="Chess vid.mp4" data-title="Chess" data-desc="Chess tracking test render (2021)">
+                <div class="media-container">
+                    <video src="Chess vid.mp4" autoplay loop muted playsinline></video>
+                </div>
+            </div>
+
+            <div class="project-card" data-type="video" data-src="0001-0250.mp4" data-title="Hayden's House ArchViz" data-desc="Arch Viz done for a friend for our portfolios (2025)">
+                <div class="media-container">
+                    <video src="0001-0250.mp4" autoplay loop muted playsinline></video>
+                </div>
+            </div>
+
+            <div class="project-card" data-type="video" data-src="Chasm's Call.mp4" data-title="Chasm's Call" data-desc="Chasm's Call community render challenge hosted by Pwnisher (2025)">
+                <div class="media-container">
+                    <video src="Chasm's Call.mp4" autoplay loop muted playsinline></video>
+                </div>
+            </div>
+
+            <div class="project-card" data-type="video" data-src="Cool Jank.mp4" data-title="Boss Fight" data-desc="Boss Fight community render challenge hosted by Pwnisher. Fire was done in EmberGen (2025)">
+                <div class="media-container">
+                    <video src="Cool Jank.mp4" autoplay loop muted playsinline></video>
+                </div>
+            </div>
+
+            <div class="project-card" data-type="video" data-src="Particles no Sphere0001-0250.mp4" data-title="Abstract Particle Flow Simulation" data-desc="Abstract particle flow simulation (2023)">
+                <div class="media-container">
+                    <video src="Particles no Sphere0001-0250.mp4" autoplay loop muted playsinline></video>
+                </div>
+            </div>
+
+            <div class="project-card" data-type="video" data-src="Rampage Rally Final.mp4" data-title="Rampage Rally" data-desc="Rampage Rally community render challenge hosted by Pwnisher. (2025)">
+                <div class="media-container">
+                    <video src="Rampage Rally Final.mp4" autoplay loop muted playsinline></video>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="contact" class="contact-section">
+        <h2>Get In Touch</h2>
+        <p>Want to collaborate on your next production? Let's build something incredible.</p>
+        <a href="mailto:your-email@example.com" class="btn">Send an Email</a>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Bryce. All rights reserved.</p>
+    </footer>
+
+    <div id="lightbox" class="lightbox-modal">
+        <button class="close-btn" id="close-lightbox" title="Close Overlay">&times;</button>
+        
+        <button class="nav-btn prev-btn" id="prev-lightbox" title="Previous Item">&#10094;</button>
+        <button class="nav-btn next-btn" id="next-lightbox" title="Next Item">&#10095;</button>
+
+        <div class="modal-wrapper">
+            <div class="modal-display">
+                <img id="lightbox-img" src="" alt="">
+                <video id="lightbox-video" src="" controls loop></video>
+            </div>
+            <div class="modal-details">
+                <h3 id="lightbox-title"></h3>
+                <p id="lightbox-desc"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const projectCards = Array.from(document.querySelectorAll('.project-card'));
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxVideo = document.getElementById('lightbox-video');
+        const lightboxTitle = document.getElementById('lightbox-title');
+        const lightboxDesc = document.getElementById('lightbox-desc');
+        const closeBtn = document.getElementById('close-lightbox');
+        const prevBtn = document.getElementById('prev-lightbox');
+        const nextBtn = document.getElementById('next-lightbox');
+
+        let currentIndex = 0;
+
+        function updateLightbox(index) {
+            if (index < 0) {
+                index = projectCards.length - 1;
+            } else if (index >= projectCards.length) {
+                index = 0;
+            }
+            
+            currentIndex = index;
+            const activeCard = projectCards[currentIndex];
+            
+            const mediaType = activeCard.getAttribute('data-type');
+            const src = activeCard.getAttribute('data-src');
+            const title = activeCard.getAttribute('data-title');
+            const desc = activeCard.getAttribute('data-desc');
+
+            // Set contextual string properties
+            lightboxTitle.textContent = title;
+            lightboxDesc.textContent = desc;
+
+            // Runtime layout assignment based on file nature
+            if (mediaType === 'video') {
+                lightboxImg.style.display = 'none';
+                lightboxImg.src = ''; 
+                
+                lightboxVideo.src = src;
+                lightboxVideo.style.display = 'block';
+                lightboxVideo.play();
+            } else {
+                lightboxVideo.style.display = 'none';
+                lightboxVideo.pause();
+                lightboxVideo.src = ''; 
+                
+                lightboxImg.src = src;
+                lightboxImg.alt = title;
+                lightboxImg.style.display = 'block';
+            }
+        }
+
+        function shutdownLightbox() {
+            lightbox.classList.remove('active');
+            lightboxVideo.pause();
+            lightboxVideo.src = '';
+            lightboxImg.src = '';
+        }
+
+        projectCards.forEach((card, index) => {
+            card.addEventListener('click', () => {
+                updateLightbox(index);
+                lightbox.classList.add('active');
+            });
+        });
+
+        closeBtn.addEventListener('click', shutdownLightbox);
+
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                shutdownLightbox();
+            }
+        });
+
+        prevBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); 
+            updateLightbox(currentIndex - 1);
+        });
+
+        nextBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            updateLightbox(currentIndex + 1);
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (!lightbox.classList.contains('active')) return;
+            
+            if (e.key === 'ArrowLeft') {
+                updateLightbox(currentIndex - 1);
+            } else if (e.key === 'ArrowRight') {
+                updateLightbox(currentIndex + 1);
+            } else if (e.key === 'Escape') {
+                shutdownLightbox();
+            }
+        });
+
+        // ==========================================================================
+        // HIGH-FIDELITY GREEN MAPLE LEAF SIMULATION (WITH SPIN RATE LIMITING)
+        // ==========================================================================
+        const heroSection = document.getElementById('hero');
+        const heroContent = document.querySelector('.hero-content');
+
+        const leafCanvas = document.createElement('canvas');
+        leafCanvas.id = 'leaf-canvas';
+        heroSection.appendChild(leafCanvas);
+
+        const leafCtx = leafCanvas.getContext('2d');
+        let canvasWidth = leafCanvas.width = heroSection.offsetWidth;
+        let canvasHeight = leafCanvas.height = heroSection.offsetHeight;
+
+        let textBounds = { left: 0, top: 0, right: 0, bottom: 0 };
+
+        function updateTextBounds() {
+            const rect = heroContent.getBoundingClientRect();
+            const heroRect = heroSection.getBoundingClientRect();
+            
+            textBounds.left = rect.left - heroRect.left;
+            textBounds.top = rect.top - heroRect.top;
+            textBounds.right = rect.right - heroRect.left;
+            textBounds.bottom = rect.bottom - heroRect.top;
+        }
+
+        updateTextBounds();
+        window.addEventListener('resize', () => {
+            canvasWidth = leafCanvas.width = heroSection.offsetWidth;
+            canvasHeight = leafCanvas.height = heroSection.offsetHeight;
+            updateTextBounds();
+        });
+
+        const leafMouse = { x: -1000, y: -1000, radius: 150 };
+
+        heroSection.addEventListener('mousemove', (e) => {
+            const rect = heroSection.getBoundingClientRect();
+            leafMouse.x = e.clientX - rect.left;
+            leafMouse.y = e.clientY - rect.top;
+        });
+
+        heroSection.addEventListener('mouseleave', () => {
+            leafMouse.x = -1000;
+            leafMouse.y = -1000;
+        });
+
+        class RealisticMapleLeaf {
+            constructor() {
+                this.reset();
+                this.y = Math.random() * canvasHeight; 
+            }
+
+            reset() {
+                this.x = Math.random() * canvasWidth;
+                this.y = -40;
+                this.size = Math.random() * 12 + 10; 
+                
+                this.vx = Math.random() * 0.8 - 0.4;
+                this.vy = Math.random() * 0.8 + 0.4; 
+                this.terminalVelocity = Math.random() * 1.0 + 0.6; 
+                
+                this.gravity = 0.035;     
+                this.friction = 0.92;     
+                this.maxSpeed = 9;        
+                
+                // Rotational Physics + NEW Max Spin Safety Clamp
+                this.angle = Math.random() * Math.PI * 2;
+                this.spin = Math.random() * 0.02 - 0.01;
+                this.maxSpin = 0.006; // Strict upper limit for angular velocity (radians per frame)
+                
+                this.scaleY = 1.0; 
+                this.flipSpeed = Math.random() * 0.04 + 0.01;
+                this.flipOffset = Math.random() * 100;
+
+                this.asymmetry = Math.random() * 0.15 - 0.075; 
+                this.stemCurve = Math.random() * 0.3 - 0.15;
+
+                const greenProfiles = [
+                    // Sunlit canopy leaves
+                    { top: '#9DBA3A', vein: '#C7D95B', back: '#7F9A2E' },
+
+                    // Fresh bright green foliage
+                    { top: '#6FAF45', vein: '#98D06A', back: '#5A9338' },
+
+                    // Mid forest green
+                    { top: '#4F8A3F', vein: '#74B85D', back: '#3F7033' },
+
+                    // Warm olive green
+                    { top: '#7A9738', vein: '#A9C75B', back: '#657D2F' },
+
+                    // Deep shaded leaf
+                    { top: '#3D6A35', vein: '#5A914E', back: '#2F5328' }
+                ];
+                
+                this.palette = greenProfiles[Math.floor(Math.random() * greenProfiles.length)];
+                
+                this.swaySpeed = Math.random() * 0.008 + 0.004;
+                this.swayOffset = Math.random() * Math.PI * 2;
+            }
+
+            update() {
+                this.vy += this.gravity;
+                this.vx *= this.friction;
+                this.vy *= this.friction;
+
+                if (this.vy > this.terminalVelocity && this.vy < this.maxSpeed) {
+                    this.vy = this.terminalVelocity;
+                }
+
+                // TEXT COLLISION ENGINE
+                if (this.x > textBounds.left && this.x < textBounds.right &&
+                    this.y > textBounds.top && this.y < textBounds.bottom) {
+                    
+                    if (this.y - this.vy <= textBounds.top + 12) {
+                        this.y = textBounds.top - 3; 
+                        this.vy = -Math.abs(this.vy) * 4.5; 
+                        this.vx += this.x < (textBounds.left + textBounds.right) / 2 ? -8.0 : 8.0; 
+                        
+                        // Add tumbling energy on bounce
+                        this.spin += Math.random() * 0.08 - 0.04; 
+                    } else {
+                        if (this.x < (textBounds.left + textBounds.right) / 2) {
+                            this.x = textBounds.left - 12;
+                            this.vx = -Math.abs(this.vx) * 4.0;
+                        } else {
+                            this.x = textBounds.right + 12;
+                            this.vx = Math.abs(this.vx) * 4.0;
+                        }
+                    }
+                }
+
+                // MOUSE FORCE ENGINE
+                const dx = this.x - leafMouse.x;
+                const dy = this.y - leafMouse.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < leafMouse.radius) {
+                    const force = (leafMouse.radius - distance) / leafMouse.radius;
+                    const forceAngle = Math.atan2(dy, dx);
+                    
+                    this.vx += Math.cos(forceAngle) * force * 2.5;
+                    this.vy += Math.sin(forceAngle) * force * 2.5;
+                    
+                    // Add mouse turbulence to spin
+                    this.spin += Math.cos(forceAngle) * force * 0.03; 
+                }
+
+                // 1. SAFETY ACTUATOR: CLAMP SPIN RATE (Prevents hyper-spinning)
+                this.spin = Math.max(-this.maxSpin, Math.min(this.maxSpin, this.spin));
+
+                // 2. SAFETY ACTUATOR: CLAMP LINEAR VELOCITY
+                const currentSpeed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+                if (currentSpeed > this.maxSpeed) {
+                    this.vx = (this.vx / currentSpeed) * this.maxSpeed;
+                    this.vy = (this.vy / currentSpeed) * this.maxSpeed;
+                }
+
+                // Apply physics to properties
+                this.y += this.vy;
+                this.x += this.vx + Math.sin(this.y * this.swaySpeed + this.swayOffset) * 0.4;
+                this.angle += this.spin;
+
+                // Continuous 3D Flip Modulator
+                this.scaleY = Math.sin((this.y + this.flipOffset) * this.flipSpeed);
+
+                if (this.y > canvasHeight + 40 || this.x < -40 || this.x > canvasWidth + 40) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                leafCtx.save();
+                leafCtx.translate(this.x, this.y);
+                leafCtx.rotate(this.angle);
+                
+                leafCtx.scale(1, Math.abs(this.scaleY) < 0.1 ? 0.1 : this.scaleY);
+
+                const baseColor = this.scaleY > 0 ? this.palette.top : this.palette.back;
+                leafCtx.fillStyle = baseColor;
+                
+                const s = this.size;
+                const asym = this.asymmetry;
+                const c = this.stemCurve;
+                
+                leafCtx.beginPath();
+                leafCtx.moveTo(0, s * 0.9); 
+                leafCtx.quadraticCurveTo(s * c, s * 0.6, 0, s * 0.35); 
+                
+                // Left Lower Base Lobe
+                leafCtx.lineTo(-s * (0.45 + asym), s * 0.4);
+                leafCtx.lineTo(-s * (0.75 + asym), s * 0.18);
+                leafCtx.lineTo(-s * (0.55 + asym), -s * 0.02);
+                
+                // Left Dominant Lateral Lobe
+                leafCtx.lineTo(-s * (0.95 + asym), -s * 0.22);
+                leafCtx.lineTo(-s * (0.65 + asym), -s * 0.42);
+                leafCtx.lineTo(-s * (0.75 + asym), -s * 0.55);
+                leafCtx.lineTo(-s * (0.35 + asym), -s * 0.52);
+                
+                // Center Crown Lobe
+                leafCtx.lineTo(-s * 0.38, -s * 0.85);
+                leafCtx.lineTo(0, -s * 1.05); 
+                leafCtx.lineTo(s * 0.38, -s * 0.85);
+                
+                // Right Dominant Lateral Lobe
+                leafCtx.lineTo(s * (0.35 - asym), -s * 0.52);
+                leafCtx.lineTo(s * (0.75 - asym), -s * 0.55);
+                leafCtx.lineTo(s * (0.65 - asym), -s * 0.42);
+                leafCtx.lineTo(s * (0.95 - asym), -s * 0.22);
+                
+                // Right Lower Base Lobe
+                leafCtx.lineTo(s * (0.55 - asym), -s * 0.02);
+                leafCtx.lineTo(s * (0.75 - asym), s * 0.18);
+                leafCtx.lineTo(s * (0.45 - asym), s * 0.4);
+                
+                leafCtx.closePath();
+                leafCtx.fill();
+
+                // Structural Leaf Veins
+                leafCtx.strokeStyle = this.palette.vein;
+                leafCtx.lineWidth = s * 0.04 < 0.8 ? 0.8 : s * 0.04;
+                leafCtx.lineCap = 'round';
+                leafCtx.globalAlpha = Math.abs(this.scaleY) * 0.7; 
+
+                leafCtx.beginPath();
+                leafCtx.moveTo(0, s * 0.35);
+                leafCtx.lineTo(0, -s * 0.85);
+                
+                leafCtx.moveTo(0, s * 0.1);
+                leafCtx.lineTo(-s * (0.6 + asym), -s * 0.3);
+                
+                leafCtx.moveTo(0, s * 0.1);
+                leafCtx.lineTo(s * (0.6 - asym), -s * 0.3);
+
+                leafCtx.moveTo(0, s * 0.22);
+                leafCtx.lineTo(-s * (0.4 + asym), s * 0.15);
+                leafCtx.moveTo(0, s * 0.22);
+                leafCtx.lineTo(s * (0.4 - asym), s * 0.15);
+
+                leafCtx.stroke();
+                
+                leafCtx.restore();
+            }
+        }
+
+        const maxLeaves = 10; 
+        const leafArray = Array.from({ length: maxLeaves }, () => new RealisticMapleLeaf());
+
+        function renderLeaves() {
+            leafCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+            
+            leafArray.forEach(leaf => {
+                leaf.update();
+                leaf.draw();
+            });
+            
+            requestAnimationFrame(renderLeaves);
+        }
+
+        renderLeaves();
+    </script>
+
+</body>
+</html>
